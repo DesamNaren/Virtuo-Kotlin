@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "617509196986",
+    "firebase_url": "https://virtuo-89aed.firebaseio.com",
+    "project_id": "virtuo-89aed",
+    "storage_bucket": "virtuo-89aed.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617509196986:android:ec1d0efb4ebaa430be5e83",
+        "android_client_info": {
+          "package_name": "com.cgg.virtuokotlin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617509196986-im63eoeaski92bfar32misk4sa575buv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm5kIVKVhqdZeYTBaFpQEs-Mdta2ecS90"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617509196986-im63eoeaski92bfar32misk4sa575buv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
