@@ -34,7 +34,7 @@ class FCMMessaging : FirebaseMessagingService() {
         val preferencesEditor = VirtuoApplication.SharedPrefEditorObj.getPreferencesEditor()
         preferencesEditor!!.putString(AppConstants.FCM_TOKEN, token)
         preferencesEditor.commit()
-        Log.i(TAG, "onNewToken: $token")
+        Log.e(TAG, "FCM_TOKEN onNewToken: $token")
     }
 
     override fun onMessageReceived(message: RemoteMessage) {

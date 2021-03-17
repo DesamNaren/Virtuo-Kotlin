@@ -28,6 +28,4 @@ class VirtuoApplication : Application() {
             return Gson()
         }
     }
-
-
 }
