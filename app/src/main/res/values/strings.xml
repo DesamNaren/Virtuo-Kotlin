@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">VirtuoKotlin</string>
     <string name="virtuo_alerts">Virtuo-Alerts</string>
+
+    <string name="permissionText">Make your Virtuo app experience better with these permissions</string>
+    <string name="camera">Camera</string>
+    <string name="camera_txt">Camera allowing you to capture pictures in the application</string>
+    <string name="location">Location</string>
+    <string name="location_txt">Collect and monitor information about the location of your device</string>
+    <string name="accept">Accept</string>
 </resources>

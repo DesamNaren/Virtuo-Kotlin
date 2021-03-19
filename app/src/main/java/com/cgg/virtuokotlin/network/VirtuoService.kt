@@ -2,6 +2,7 @@ package com.cgg.virtuokotlin.network
 
 import android.util.Log
 import com.cgg.virtuokotlin.BuildConfig
+import com.cgg.virtuokotlin.source.VersionResponse
 import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -37,5 +38,5 @@ interface VirtuoService {
     }
 
     @GET("web/getCurrentAppVersion2")
-    fun getVersionCheck(): Call<String>?
+    fun getVersionCheck(): Call<VersionResponse>?
 }
