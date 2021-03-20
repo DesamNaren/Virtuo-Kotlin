@@ -3,12 +3,11 @@ package com.cgg.virtuokotlin.ui
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.view.View
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -24,15 +23,17 @@ import com.cgg.virtuokotlin.databinding.CustomLayoutForPermissionsBinding
 import com.cgg.virtuokotlin.interfaces.PermissionsCallback
 import com.cgg.virtuokotlin.viewmodel.SplashViewModel
 
+
 class SplashActivity : BaseActivity(), PermissionsCallback {
-    private val REQUEST_PERMISSION_CODE = 2000
+    companion object {
+        private const val REQUEST_PERMISSION_CODE: Int = 2000
+    }
 
     private lateinit var binding: ActivitySplashBinding
     private lateinit var preferences: SharedPreferences
     private lateinit var preferencesEditor: SharedPreferences.Editor
     private lateinit var viewModel: SplashViewModel
     private lateinit var context: Context
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +42,7 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
         preferences = VirtuoApplication.SharedPrefEditorObj.getPreferences()!!
         preferencesEditor = VirtuoApplication.SharedPrefEditorObj.getPreferencesEditor()!!
 
+        /**Setting Screen Background*/
         var themeColor = preferences.getInt(AppConstants.THEME_COLOR, -1);
         when (themeColor) {
             -1 -> {
@@ -66,6 +68,7 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
         callVersionCheck()
     }
 
+    /** Call Version API*/
     private fun callVersionCheck() {
         when (Utils.checkInternetConnection(this)) {
             false -> toast("No Internet Connection")
@@ -82,28 +85,18 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
         }
     }
 
-    override fun onPermissionRequest(granted: Boolean) {
-        if (!granted) {
-            val customBinding = DataBindingUtil.setContentView<CustomLayoutForPermissionsBinding>(
-                context as Activity,
-                R.layout.custom_layout_for_permissions
-            )
-            customBinding.accept.setOnClickListener(View.OnClickListener {
-                callPermissions()
-            })
-        }
-    }
-
+    /** Request Permissions*/
     private fun callPermissions() {
         ActivityCompat.requestPermissions(
             this@SplashActivity, arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.CAMERA
             ),
-            REQUEST_PERMISSION_CODE
+            Companion.REQUEST_PERMISSION_CODE
         )
     }
 
+    /** Request Permissions Results*/
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String?>,
@@ -111,28 +104,13 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
     ) {
         try {
             if (requestCode == REQUEST_PERMISSION_CODE) {
+                val mPIN: String = preferences.getString(AppConstants.MPIN, "")!!
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED
                     && grantResults[1] == PackageManager.PERMISSION_GRANTED
                 ) {
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        val mPIN = preferences.getString(AppConstants.MPIN, "");
-                        when {
-//                            TextUtils.isEmpty(mPIN) -> {
-//                                startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
-//                            }
-//                            else -> {
-//                                startActivity(
-//                                    Intent(
-//                                        this@SplashActivity,
-//                                        ValidateMPINActivity::class.java
-//                                    )
-//                                )
-//                            }
-                        }
-                        finish()
-                    }, 1_000)
+                    navigateActivity(mPIN)
                 } else {
-//                    customAlert()
+                    navigateActivity(mPIN)
                 }
             }
         } catch (e: Exception) {
@@ -140,7 +118,39 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
             e.printStackTrace()
         }
     }
+
+    private fun navigateActivity(mPIN: String) {
+        when {
+            TextUtils.isEmpty(mPIN) -> {
+                callActivity(SplashActivity::class.java)
+            }
+            else -> {
+                callActivity(SplashActivity::class.java)
+            }
+        }
+        finish()
+    }
+
+    private fun callActivity(activity: Class<out Activity?>) {
+        startActivity(Intent(this, activity::class.java))
+    }
+
+    override fun onPermissionRequest(granted: Boolean) {
+        if (!granted) {
+            val customBinding = DataBindingUtil.setContentView<CustomLayoutForPermissionsBinding>(
+                context as Activity,
+                R.layout.custom_layout_for_permissions
+            )
+            customBinding.accept.setOnClickListener {
+                callPermissions()
+            }
+        }
+    }
 }
+
+/** Toast Display*/
+fun Context.toast(message: CharSequence) =
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
 /** Get Firebase Token*/
 /*private fun Context.getFirebaseInstanceID() {
@@ -151,7 +161,9 @@ preferencesEditor.commit()
 }
 }*/
 
-/** Toast Display*/
-fun Context.toast(message: CharSequence) =
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+
+
+
+
 
