@@ -23,7 +23,6 @@ import com.cgg.virtuokotlin.databinding.CustomLayoutForPermissionsBinding
 import com.cgg.virtuokotlin.interfaces.PermissionsCallback
 import com.cgg.virtuokotlin.viewmodel.SplashViewModel
 
-
 class SplashActivity : BaseActivity(), PermissionsCallback {
     companion object {
         private const val REQUEST_PERMISSION_CODE: Int = 2000
@@ -32,7 +31,6 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
     private lateinit var binding: ActivitySplashBinding
     private lateinit var preferences: SharedPreferences
     private lateinit var preferencesEditor: SharedPreferences.Editor
-    private lateinit var viewModel: SplashViewModel
     private lateinit var context: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,9 +60,10 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
             R.drawable.theme_five -> binding.root.background =
                 ContextCompat.getDrawable(context, R.drawable.splash5)
         }
+
         /*getFirebaseInstanceID()*/
 
-        viewModel = ViewModelProvider(this).get(SplashViewModel::class.java)
+
         callVersionCheck()
     }
 
@@ -73,6 +72,7 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
         when (Utils.checkInternetConnection(this)) {
             false -> toast("No Internet Connection")
             else -> {
+                val viewModel: SplashViewModel =  ViewModelProvider(this).get(SplashViewModel::class.java)
                 viewModel.getVersionResponse()!!.observe(this@SplashActivity, { versionResponse ->
                     if (versionResponse.data.version_no == Utils.getVersionName(context)) {
                         AppConstants.VERSION_DATE = versionResponse.data.lastupdated_date
