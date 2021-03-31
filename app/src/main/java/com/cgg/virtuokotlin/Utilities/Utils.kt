@@ -6,7 +6,10 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import android.provider.Settings
+import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import com.cgg.virtuokotlin.R
 import java.util.*
 
@@ -93,6 +96,28 @@ class Utils {
         fun getVersionName(context: Context): String {
             val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
             return packageInfo.versionName
+        }
+
+        fun getDeviceID(context: Context): String? {
+            var deviceID: String? = ""
+            try {
+                deviceID = Settings.Secure.getString(
+                    context.contentResolver, Settings.Secure.ANDROID_ID
+                )
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
+            return deviceID
+        }
+
+        fun hideKeyboard(context: Context, mView: View) {
+            try {
+                val imm =
+                    context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(mView.windowToken, 0)
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

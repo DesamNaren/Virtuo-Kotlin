@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/root_rl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/theme_one"
+        android:focusable="false"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/version_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dimen_8dp"
+            android:layout_marginEnd="@dimen/dimen_8dp"
+            android:layout_marginRight="@dimen/dimen_8dp"
+            android:fontFamily="@font/muli_bold"
+            android:textColor="@color/white" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+
+
+                <ScrollView
+                    android:id="@+id/cover"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
+
+                    <LinearLayout
+                        android:id="@+id/root"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/dimen_20dp"
+                        android:layout_marginRight="@dimen/dimen_20dp"
+                        android:background="@color/white"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+
+                        <LinearLayout
+                            android:id="@+id/ll"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/dimen_10dp"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tv_user_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColorHint="@color/dark_grey"
+                                app:boxStrokeColor="@color/dark_grey"
+                                app:errorEnabled="false"
+                                app:errorTextAppearance="@style/text_in_layout_error_hint_Style"
+                                app:hintTextAppearance="@style/text_in_layout_hint_Style"
+                                app:hintTextColor="@color/dark_grey">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_userName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginRight="20dp"
+                                    android:background="@color/white"
+                                    android:drawablePadding="25dp"
+                                    android:ems="10"
+                                    android:fontFamily="@font/elmessiri_regular"
+                                    android:hint="@string/username"
+                                    android:imeOptions="actionNext"
+                                    android:maxLength="40"
+                                    android:singleLine="true"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/black"
+                                    android:textCursorDrawable="@drawable/black_cursor"
+                                    android:textSize="@dimen/dimen_16sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tv_mob_num"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColorHint="@color/dark_grey"
+                                android:visibility="gone"
+                                app:boxStrokeColor="@color/dark_grey"
+                                app:errorEnabled="false"
+                                app:errorTextAppearance="@style/text_in_layout_error_hint_Style"
+                                app:hintTextAppearance="@style/text_in_layout_hint_Style"
+                                app:hintTextColor="@color/dark_grey">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_mobile_num"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginRight="20dp"
+                                    android:background="@color/white"
+                                    android:drawablePadding="25dp"
+                                    android:ems="10"
+                                    android:fontFamily="@font/elmessiri_regular"
+                                    android:hint="@string/mobile_num"
+                                    android:imeOptions="actionNext"
+                                    android:inputType="number"
+                                    android:maxLength="10"
+                                    android:singleLine="true"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/black"
+                                    android:textCursorDrawable="@drawable/black_cursor"
+                                    android:textSize="@dimen/dimen_16sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                            <com.google.android.material.textfield.TextInputLayout
+                                android:id="@+id/tv_password"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textColorHint="@color/dark_grey"
+                                app:boxStrokeColor="@color/dark_grey"
+                                app:errorEnabled="false"
+                                app:errorTextAppearance="@style/text_in_layout_error_hint_Style"
+                                app:hintTextAppearance="@style/text_in_layout_hint_Style"
+                                app:hintTextColor="@color/dark_grey"
+                                app:passwordToggleEnabled="true">
+
+                                <com.google.android.material.textfield.TextInputEditText
+                                    android:id="@+id/et_pwd"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginTop="20dp"
+                                    android:layout_marginRight="20dp"
+                                    android:background="@color/white"
+                                    android:drawablePadding="20dp"
+                                    android:ems="10"
+                                    android:fontFamily="@font/elmessiri_regular"
+                                    android:hint="@string/password"
+                                    android:imeOptions="actionDone"
+                                    android:inputType="textPassword"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textCursorDrawable="@drawable/black_cursor"
+                                    android:textSize="@dimen/dimen_16sp" />
+                            </com.google.android.material.textfield.TextInputLayout>
+
+                        </LinearLayout>
+
+
+                        <Button
+                            android:id="@+id/btn_submit"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="@dimen/dimen_20dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginRight="@dimen/dimen_20dp"
+                            android:fontFamily="@font/muli_bold"
+                            android:gravity="center"
+                            android:text="@string/login"
+                            android:textAllCaps="false"
+                            android:textSize="@dimen/dimen_16sp"
+                            app:backgroundTint="@color/color1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/dimen_8dp"
+                            android:layout_marginBottom="@dimen/dimen_8dp"
+                            android:text="@string/or"
+                            android:textColor="@color/colorAccent" />
+
+                        <Button
+                            android:id="@+id/btn_login_mob"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginLeft="@dimen/dimen_20dp"
+                            android:layout_marginRight="@dimen/dimen_20dp"
+                            android:layout_marginBottom="@dimen/dimen_10dp"
+                            android:fontFamily="@font/muli_bold"
+                            android:gravity="center"
+                            android:text="@string/login_with_mob"
+                            android:textAllCaps="false"
+                            android:textSize="@dimen/dimen_14sp"
+                            app:backgroundTint="@color/color1" />
+
+                    </LinearLayout>
+
+
+                </ScrollView>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/cover"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/cover"
+                app:layout_constraintVertical_bias="0.5"
+                app:layout_constraintVertical_weight="0.5">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_profile_photo"
+                    android:layout_width="@dimen/_80dp"
+                    android:layout_height="@dimen/_80dp"
+                        android:background="@drawable/background_border_stroke"
+                    android:padding="1dp"
+                    android:src="@drawable/virtuo_circle_logo" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/device_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/fot_lay"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/dimen_8dp"
+            android:layout_marginRight="@dimen/dimen_8dp"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:fontFamily="@font/muli_bold"
+            android:textColor="@color/white" />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/root_cl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/colorAccent" />
+
+        <include
+            android:id="@+id/fot_lay"
+            layout="@layout/footer_layout_new" />
+
+    </RelativeLayout>
+</layout>

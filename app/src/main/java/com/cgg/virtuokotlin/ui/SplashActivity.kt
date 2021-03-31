@@ -4,43 +4,42 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.TextUtils
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.cgg.virtuokotlin.R
 import com.cgg.virtuokotlin.Utilities.AppConstants
+import com.cgg.virtuokotlin.Utilities.Extensions.test
+import com.cgg.virtuokotlin.Utilities.Extensions.toast
 import com.cgg.virtuokotlin.Utilities.PermissionUtils
 import com.cgg.virtuokotlin.Utilities.Utils
-import com.cgg.virtuokotlin.application.VirtuoApplication
 import com.cgg.virtuokotlin.databinding.ActivitySplashBinding
 import com.cgg.virtuokotlin.databinding.CustomLayoutForPermissionsBinding
 import com.cgg.virtuokotlin.interfaces.PermissionsCallback
 import com.cgg.virtuokotlin.viewmodel.SplashViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SplashActivity : BaseActivity(), PermissionsCallback {
-    companion object {
-        private const val REQUEST_PERMISSION_CODE: Int = 2000
-    }
 
     private lateinit var binding: ActivitySplashBinding
-    private lateinit var preferences: SharedPreferences
-    private lateinit var preferencesEditor: SharedPreferences.Editor
     private lateinit var context: Context
+    private lateinit var mPIN: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context = this@SplashActivity
-        binding = DataBindingUtil.setContentView(context as Activity, R.layout.activity_splash)
-        preferences = VirtuoApplication.SharedPrefEditorObj.getPreferences()!!
-        preferencesEditor = VirtuoApplication.SharedPrefEditorObj.getPreferencesEditor()!!
+        context = this
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_splash)
+        mPIN = preferences.getString(AppConstants.MPIN, "")!!
 
-        /**Setting Screen Background*/
+        /**Setting Theme Background*/
+
         var themeColor = preferences.getInt(AppConstants.THEME_COLOR, -1);
         when (themeColor) {
             -1 -> {
@@ -61,10 +60,11 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
                 ContextCompat.getDrawable(context, R.drawable.splash5)
         }
 
-        /*getFirebaseInstanceID()*/
+        /** Call Version API*/
+        Handler(Looper.getMainLooper()).postDelayed(Runnable {
+            callVersionCheck()
+        }, 2000)
 
-
-        callVersionCheck()
     }
 
     /** Call Version API*/
@@ -72,12 +72,39 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
         when (Utils.checkInternetConnection(this)) {
             false -> toast("No Internet Connection")
             else -> {
-                val viewModel: SplashViewModel =  ViewModelProvider(this).get(SplashViewModel::class.java)
-                viewModel.getVersionResponse()!!.observe(this@SplashActivity, { versionResponse ->
-                    if (versionResponse.data.version_no == Utils.getVersionName(context)) {
-                        AppConstants.VERSION_DATE = versionResponse.data.lastupdated_date
+                val viewModel: SplashViewModel =
+                    ViewModelProvider(this).get(SplashViewModel::class.java)
 
-                        PermissionUtils.requestPermissions(context, this)
+                viewModel.getVersionResponse().observe(this@SplashActivity, { versionResponse ->
+                    if (versionResponse!!.data.version_no == Utils.getVersionName(context)) {
+                        if (preferences.getBoolean(AppConstants.PER_ASKED, false)) {
+                            navigateActivity(mPIN)
+                        } else {
+                            AppConstants.VERSION_DATE = versionResponse.data.lastupdated_date
+                            val permissionLoc = ContextCompat.checkSelfPermission(
+                                this@SplashActivity, Manifest.permission.ACCESS_FINE_LOCATION
+                            )
+                            val permissionCam = ContextCompat.checkSelfPermission(
+                                this@SplashActivity, Manifest.permission.CAMERA
+                            )
+                            when {
+                                permissionLoc != PackageManager.PERMISSION_GRANTED || permissionCam != PackageManager.PERMISSION_GRANTED -> {
+                                    val customBinding =
+                                        DataBindingUtil.setContentView<CustomLayoutForPermissionsBinding>(
+                                            this@SplashActivity,
+                                            R.layout.custom_layout_for_permissions
+                                        )
+                                    customBinding.accept.setOnClickListener {
+                                        preferencesEditor.putBoolean(AppConstants.PER_ASKED, true)
+                                        preferencesEditor.commit()
+                                        PermissionUtils.requestPermissions(context, this)
+                                    }
+                                }
+                                else -> {
+                                    navigateActivity(mPIN)
+                                }
+                            }
+                        }
 
                     } else toast("Update Latest Version")
                 })
@@ -85,44 +112,10 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
         }
     }
 
-    /** Request Permissions*/
-    private fun callPermissions() {
-        ActivityCompat.requestPermissions(
-            this@SplashActivity, arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.CAMERA
-            ),
-            Companion.REQUEST_PERMISSION_CODE
-        )
-    }
-
-    /** Request Permissions Results*/
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String?>,
-        grantResults: IntArray
-    ) {
-        try {
-            if (requestCode == REQUEST_PERMISSION_CODE) {
-                val mPIN: String = preferences.getString(AppConstants.MPIN, "")!!
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED
-                ) {
-                    navigateActivity(mPIN)
-                } else {
-                    navigateActivity(mPIN)
-                }
-            }
-        } catch (e: Exception) {
-            Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
-            e.printStackTrace()
-        }
-    }
-
     private fun navigateActivity(mPIN: String) {
         when {
             TextUtils.isEmpty(mPIN) -> {
-                callActivity(SplashActivity::class.java)
+                callActivity(LoginActivity::class.java)
             }
             else -> {
                 callActivity(SplashActivity::class.java)
@@ -132,34 +125,20 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
     }
 
     private fun callActivity(activity: Class<out Activity?>) {
-        startActivity(Intent(this, activity::class.java))
+        startActivity(Intent(this, activity))
     }
 
-    override fun onPermissionRequest(granted: Boolean) {
-        if (!granted) {
-            val customBinding = DataBindingUtil.setContentView<CustomLayoutForPermissionsBinding>(
-                context as Activity,
-                R.layout.custom_layout_for_permissions
-            )
-            customBinding.accept.setOnClickListener {
-                callPermissions()
+    override fun onPermissionCallBack(granted: Boolean) {
+        when {
+            granted -> {
+                navigateActivity(mPIN)
+            }
+            else -> {
+                navigateActivity(mPIN)
             }
         }
     }
 }
-
-/** Toast Display*/
-fun Context.toast(message: CharSequence) =
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-
-/** Get Firebase Token*/
-/*private fun Context.getFirebaseInstanceID() {
-FirebaseInstallations.getInstance().getToken(false).addOnCompleteListener {
-Log.e("FCM_TOKEN", it.result!!.token)
-preferencesEditor.putString(AppConstants.FCM_TOKEN, it.result!!.token)
-preferencesEditor.commit()
-}
-}*/
 
 
 

@@ -8,4 +8,21 @@
     <string name="location">Location</string>
     <string name="location_txt">Collect and monitor information about the location of your device</string>
     <string name="accept">Accept</string>
+    <string name="username">Username</string>
+    <string name="mobile_num">Mobile Number</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="or">OR</string>
+    <string name="login_with_mob">Login with Mobile No.</string>
+    <string name="powered_by_cgg">Powered by CGG</string>
+    <string name="unable_token">Token is empty, Unable to proceed</string>
+    <string name="enter_6_digit_otp">Enter 6 digit OTP sent to</string>
+    <string name="resend_otp">Resend OTP</string>
+    <string name="submit">Submit</string>
+    <string name="something">Something went wrong, please try again</string>
+
+    <string name="please_enter_6_digit_otp">Please enter 6-Digit OTP</string>
+
+    <string name="please_enter_username">Please enter username</string>
+    <string name="please_enter_password">Please enter password</string>
 </resources>

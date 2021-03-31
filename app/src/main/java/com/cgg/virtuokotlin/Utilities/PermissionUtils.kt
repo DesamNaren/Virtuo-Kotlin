@@ -26,13 +26,13 @@ object PermissionUtils : MultiplePermissionsListener {
     override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
         return when {
             report!!.areAllPermissionsGranted() ->
-                callback.onPermissionRequest(true)
+                callback.onPermissionCallBack(true)
 
             report.isAnyPermissionPermanentlyDenied ->
-                callback.onPermissionRequest(false)
+                callback.onPermissionCallBack(false)
 
             else ->
-                callback.onPermissionRequest(false)
+                callback.onPermissionCallBack(false)
 
         }
     }
