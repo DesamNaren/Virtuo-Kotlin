@@ -18,10 +18,11 @@ package com.cgg.virtuokotlin.network
 
 import android.util.Log
 import com.cgg.virtuokotlin.BuildConfig
+import com.cgg.virtuokotlin.source.CoOrdinatesResponse
 import com.cgg.virtuokotlin.source.LoginResponse
 import com.cgg.virtuokotlin.source.VersionResponse
 import okhttp3.OkHttpClient
-import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -54,10 +55,10 @@ fun getNetworkService() = service
 interface ViruoNetwork {
 
     @GET("web/getCurrentAppVersion2")
-    fun getVersionCheck(): Call<VersionResponse?>?
+    suspend fun getVersionCheck(): Response<VersionResponse>
 
     @POST("web/userVerification")
-    fun getLoginResponse(
+    suspend fun getLoginResponse(
         @Header("userName") username: String?,
         @Header("password") password: String?,
         @Header("mobileNumber") mobNum: String?,
@@ -65,6 +66,9 @@ interface ViruoNetwork {
         @Header("IMEI") IMEI: String?,
         @Header("fcmtoken") fcmtoken: String?,
         @Header("deviceType") deviceType: String?
-    ): Call<LoginResponse?>?
+    ): Response<LoginResponse>
+
+    @GET("getOfficeCoordinates")
+    suspend fun getOfficeCoOrdinates(@Header("Auth_Token") token: String):Response<CoOrdinatesResponse>
 }
 

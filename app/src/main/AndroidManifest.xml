@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VirtuoKotlin"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ui.AutoOTPActivity"/>
+        <activity android:name=".ui.DownloadActivity"></activity>
+        <activity android:name=".ui.AutoOTPActivity" />
         <activity
             android:name=".ui.LoginActivity"
             android:screenOrientation="portrait" />

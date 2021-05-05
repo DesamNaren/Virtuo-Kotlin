@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/pl_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_5dp"
+        android:padding="@dimen/dimen_5dp">
+
+        <LinearLayout
+            android:id="@+id/ll_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profile_image"
+                android:layout_width="@dimen/_80dp"
+                android:layout_height="@dimen/_80dp"
+                android:layout_gravity="center"
+                android:padding="@dimen/dimen_2dp"
+                android:src="@drawable/virtuo_notification_icon"
+                app:civ_border_color="#FFF"
+                app:civ_border_width="2dp" />
+
+            <TextView
+                android:id="@+id/tv_emp_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:fontFamily="@font/muli_bold"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_16sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/profiledata"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_12dp"
+            android:layout_marginLeft="@dimen/dimen_12dp"
+            android:layout_toEndOf="@id/ll_profile"
+            android:layout_toRightOf="@id/ll_profile"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_8dp">
+
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/muli_bold"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_18sp" />
+
+
+            <TextView
+                android:id="@+id/tv_user_contact"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_8dp"
+                android:drawablePadding="@dimen/dimen_5dp"
+                android:fontFamily="@font/elmessiri_regular"
+                android:gravity="start|center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_16sp"
+                android:textStyle="bold"
+                app:drawableStartCompat="@android:drawable/ic_menu_call"
+                app:drawableLeftCompat="@android:drawable/ic_menu_call" />
+
+            <TextView
+                android:id="@+id/tv_user_des"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_5dp"
+                android:drawablePadding="@dimen/dimen_5dp"
+                android:fontFamily="@font/elmessiri_regular"
+                android:gravity="start|center"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_16sp"
+                android:textStyle="bold"
+                app:drawableStartCompat="@android:drawable/star_on"
+                app:drawableLeftCompat="@android:drawable/star_on" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/date_time_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profiledata"
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/date_ll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_8dp"
+                android:layout_marginLeft="@dimen/dimen_8dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:padding="@dimen/dimen_5dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_user_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/dimen_5dp"
+                    app:drawableTint="@color/white"
+                    android:fontFamily="@font/muli_bold"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimen_16sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/virtuo_notification_icon"
+                    app:drawableLeftCompat="@drawable/virtuo_notification_icon" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/time_ll"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dimen_8dp"
+                android:layout_marginRight="@dimen/dimen_8dp"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:padding="@dimen/dimen_5dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tv_user_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="@dimen/dimen_5dp"
+                    app:drawableTint="@color/white"
+                    android:fontFamily="@font/muli_bold"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimen_16sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/virtuo_notification_icon"
+                    app:drawableLeftCompat="@drawable/virtuo_notification_icon" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+</layout>

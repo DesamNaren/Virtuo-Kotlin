@@ -25,4 +25,8 @@
 
     <string name="please_enter_username">Please enter username</string>
     <string name="please_enter_password">Please enter password</string>
+    <string name="location_master">Location Master</string>
+    <string name="loc_sub_master">(Office locations &amp; Work locations)</string>
+    <string name="download">Download</string>
+
 </resources>

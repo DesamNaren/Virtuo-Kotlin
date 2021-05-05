@@ -3,7 +3,6 @@ package com.cgg.virtuokotlin.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.cgg.virtuokotlin.R
 import com.cgg.virtuokotlin.Utilities.AppConstants
@@ -21,7 +19,6 @@ import com.cgg.virtuokotlin.databinding.ActivityAutoOtpBinding
 import com.cgg.virtuokotlin.interfaces.OtpInterface
 import com.cgg.virtuokotlin.source.LoginReq
 import com.cgg.virtuokotlin.source.LoginResponse
-import com.cgg.virtuokotlin.viewmodel.LoginViewModel
 import com.google.android.gms.auth.api.phone.SmsRetriever
 import com.google.gson.Gson
 import io.reactivex.Observable
@@ -65,38 +62,44 @@ class AutoOTPActivity : BaseActivity(), OtpInterface {
     }
 
     private fun setInitialFocus() {
-        binding.firstPinView.requestFocus()
-        val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        manager.showSoftInput(binding.firstPinView, InputMethodManager.SHOW_IMPLICIT)
+        binding.apply {
+            firstPinView.requestFocus()
+            val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            manager.showSoftInput(firstPinView, InputMethodManager.SHOW_IMPLICIT)
+        }
     }
 
     private fun getSharedPrefData() {
-        userName = preferences.getString(AppConstants.USER_NAME, "")!!
-        password = preferences.getString(AppConstants.PASSWORD, "")!!
-        encUserName = preferences.getString(AppConstants.ENC_USER_NAME, "")!!
-        encPwd = preferences.getString(AppConstants.ENC_USER_PWD, "")!!
-        encMobileNum = preferences.getString(AppConstants.ENC_USER_MOB, "")!!
-        fcmToken = preferences.getString(AppConstants.FCM_TOKEN, "")!!
-        empName = preferences.getString(AppConstants.EMP_NAME, "")!!
-        email = preferences.getString(AppConstants.USER_EMAIL, "")!!
-        pic = preferences.getString(AppConstants.USER_PIC, "")!!
-        data = preferences.getString(AppConstants.LOGIN_RESPONSE, "")!!
-        loginResponse = Gson().fromJson(data, LoginResponse::class.java)
-        when {
-            !TextUtils.isEmpty(loginResponse.data.otpMobile) && !TextUtils.isEmpty(
-                loginResponse.data.mobileNumber
-            ) -> {
-                set6DigitText(loginResponse.data.mobileNumber)
-                //startSMSListener()
+        preferences.apply {
+            userName = getString(AppConstants.USER_NAME, "")!!
+            password = getString(AppConstants.PASSWORD, "")!!
+            encUserName = getString(AppConstants.ENC_USER_NAME, "")!!
+            encPwd = getString(AppConstants.ENC_USER_PWD, "")!!
+            encMobileNum = getString(AppConstants.ENC_USER_MOB, "")!!
+            fcmToken = getString(AppConstants.FCM_TOKEN, "")!!
+            empName = getString(AppConstants.EMP_NAME, "")!!
+            email = getString(AppConstants.USER_EMAIL, "")!!
+            pic = getString(AppConstants.USER_PIC, "")!!
+            data = getString(AppConstants.LOGIN_RESPONSE, "")!!
+            loginResponse = Gson().fromJson(data, LoginResponse::class.java)
+            loginResponse.data.apply {
+                when {
+                    !TextUtils.isEmpty(otpMobile) && !TextUtils.isEmpty(
+                        mobileNumber
+                    ) -> {
+                        set6DigitText(mobileNumber)
+                        //startSMSListener()
+                    }
+                    else -> {
+                        toast(getString(R.string.something))
+                    }
+                }
             }
-            else -> {
-                toast(getString(R.string.something))
-            }
-        }
-        binding.tvResend.setOnClickListener(View.OnClickListener {
-            resendCall()
-        })
 
+            binding.tvResend.setOnClickListener(View.OnClickListener {
+                resendCall()
+            })
+        }
     }
 
     private fun loadPic() {
@@ -145,40 +148,36 @@ class AutoOTPActivity : BaseActivity(), OtpInterface {
         } else {
             loginRequest.mobileNumber = null
         }
-        val viewModel: LoginViewModel =
-            ViewModelProvider(this).get(LoginViewModel::class.java)
-        viewModel.getLoginResponse(loginRequest)!!.observe(this@AutoOTPActivity, { loginResponse ->
-            this@AutoOTPActivity.loginResponse = loginResponse
-            if (loginResponse?.status_Code != null) {
-                if (loginResponse.status_Code == AppConstants.SESSION_EXPIRE) {
-                    toast("Session  Expired")
-                } else if (loginResponse.status_Code == AppConstants.SUCCESS_CODE) {
-                    otpTimer()
-                    storeLoginRes(loginResponse)
-                } else if (loginResponse.status_Code == AppConstants.FAILURE_CODE) {
-                    toast(loginResponse.status_Message)
-                } else {
-                    toast(getString(R.string.something))
-                }
-            } else {
-                toast("Server not responding")
-            }
-        })
+//        val viewModel: LoginViewModel =
+//            ViewModelProvider(this).get(LoginViewModel::class.java)
+//        viewModel.getLoginResponse(loginRequest)!!.observe(this@AutoOTPActivity, { loginResponse ->
+//            this@AutoOTPActivity.loginResponse = loginResponse
+//            if (loginResponse?.status_Code != null) {
+//                if (loginResponse.status_Code == AppConstants.SESSION_EXPIRE) {
+//                    toast("Session  Expired")
+//                } else if (loginResponse.status_Code == AppConstants.SUCCESS_CODE) {
+//                    otpTimer()
+//                    storeLoginRes(loginResponse)
+//                } else if (loginResponse.status_Code == AppConstants.FAILURE_CODE) {
+//                    toast(loginResponse.status_Message)
+//                } else {
+//                    toast(getString(R.string.something))
+//                }
+//            } else {
+//                toast("Server not responding")
+//            }
+//        })
     }
 
 
     private fun otpTimer() {
-
         val intervalObservable = Observable
             .interval(1000L, TimeUnit.SECONDS)
             .subscribeOn(Schedulers.io())
-            .takeWhile(object : Predicate<Long?> {
-                // stop the process if more than 5 seconds passes
-                @Throws(Exception::class)
-                override fun test(aLong: Long): Boolean {
-                    return aLong < 30
-                }
-            })
+            .takeWhile { aLong ->
+                // stop the process if more than 30 seconds passes
+                aLong < 30
+            }
             .observeOn(AndroidSchedulers.mainThread())
 
         intervalObservable.subscribe(object : Observer<Long> {
@@ -186,7 +185,8 @@ class AutoOTPActivity : BaseActivity(), OtpInterface {
             override fun onNext(aLong: Long) {
                 if (cnt < 3) {
                     binding.tvResend.isEnabled = true
-                    binding.tvResend.text = getString(R.string.resend_otp)+" in"+aLong+" seconds"
+                    binding.tvResend.text =
+                        getString(R.string.resend_otp) + " in" + aLong + " seconds"
                     //startSMSListener()
                 } else {
                     binding.tvResend.visibility = View.GONE
@@ -218,11 +218,13 @@ class AutoOTPActivity : BaseActivity(), OtpInterface {
     }
 
     private fun storeLoginRes(loginResponse: LoginResponse) {
-        val loginRes: String = Gson().toJson(loginResponse)
-        preferencesEditor.putString(AppConstants.LOGIN_RESPONSE, loginRes)
-        preferencesEditor.commit()
-        set6DigitText(loginResponse.data.mobileNumber)
-        toast(loginResponse.status_Message)
+        preferencesEditor.apply {
+            val loginRes: String = Gson().toJson(loginResponse)
+            putString(AppConstants.LOGIN_RESPONSE, loginRes)
+            commit()
+            set6DigitText(loginResponse.data.mobileNumber)
+            toast(loginResponse.status_Message)
+        }
     }
 
     fun startSMSListener() {
@@ -241,36 +243,42 @@ class AutoOTPActivity : BaseActivity(), OtpInterface {
     }
 
     private fun callSubmit() {
-        if (TextUtils.isEmpty(binding.firstPinView.text)) {
-            binding.firstPinView.error = context.getString(R.string.please_enter_6_digit_otp)
-            binding.firstPinView.requestFocus()
-        } else if (Objects.requireNonNull(binding.firstPinView.text).toString().length < 6) {
-            binding.firstPinView.error = context.getString(R.string.please_enter_6_digit_otp)
-            binding.firstPinView.requestFocus()
-        } else {
-            if (!TextUtils.isEmpty(
-                    loginResponse.data.otpMobile
-                )
-            ) {
-                VerifyOTP(
-                    binding.firstPinView.text.toString(),
-                    loginResponse.data.otpMobile
-                )
+        binding.firstPinView.apply {
+            if (TextUtils.isEmpty(text)) {
+                error = context.getString(R.string.please_enter_6_digit_otp)
+                requestFocus()
+            } else if (Objects.requireNonNull(text).toString().length < 6) {
+                error = context.getString(R.string.please_enter_6_digit_otp)
+                requestFocus()
             } else {
-                toast("OTP is empty from server")
+                if (!TextUtils.isEmpty(
+                        loginResponse.data.otpMobile
+                    )
+                ) {
+                    VerifyOTP(
+                        text.toString(),
+                        loginResponse.data.otpMobile
+                    )
+                } else {
+                    toast("OTP is empty from server")
+                }
             }
         }
+
     }
 
     private fun VerifyOTP(otp: String, actOtp: String) {
-        Utils.hideKeyboard(context, binding.btnSubmit)
-        if (otp == actOtp) {
-            binding.firstPinView.error = null
-            context.startActivity(Intent(context, AutoOTPActivity::class.java))
-        } else {
-            toast("Invalid OTP Entered")
-            binding.firstPinView.requestFocus()
+        binding.apply {
+            Utils.hideKeyboard(context, btnSubmit)
+            if (otp == actOtp) {
+                firstPinView.error = null
+                context.startActivity(Intent(context, AutoOTPActivity::class.java))
+            } else {
+                toast("Invalid OTP Entered")
+                firstPinView.requestFocus()
+            }
         }
+
     }
 
     override fun onOtpReceived(otp: String) {

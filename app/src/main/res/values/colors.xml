@@ -25,4 +25,7 @@
 
     <color name="dark_grey">#808080</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="e_gray">#E9E9E9</color>
+    <color name="dashboard_icons_color">#39526c</color>
+
 </resources>

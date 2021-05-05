@@ -31,7 +31,7 @@ public class AesEncryption {
 
 
     private AesEncryption() throws Exception {
-        SecretKey secret = new SecretKeySpec(BuildConfig.AES.getBytes(),
+        SecretKey secret = new SecretKeySpec("GGC@Virtu000AesC".getBytes(),
                 "AES");
 
         encryptCipher = Cipher.getInstance("AES/ECB/PKCS5Padding");

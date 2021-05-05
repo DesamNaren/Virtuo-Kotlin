@@ -31,22 +31,8 @@ object Extensions {
 
     }
 
-    /**Setting Login Theme Background*/
-    fun Activity.loginBg(sharedPreferences: SharedPreferences?, binding: ActivityLoginBinding?) {
-        val selectedThemeColor = sharedPreferences!!.getInt("theme_color", -1)
-        when {
-            selectedThemeColor != -1 ->
-                binding!!.root.setBackgroundResource(selectedThemeColor)
 
-            else ->
-                binding!!.root.setBackgroundResource(R.drawable.theme_four)
-
-        }
-        Utils.changeStatusBarColor(this, sharedPreferences)
-
-    }
     /** Get Firebase Token*/
-
     fun Context.firebaseToken(preferencesEditor: SharedPreferences.Editor) {
         FirebaseInstallations.getInstance().getToken(false).addOnCompleteListener {
             Log.e("FCM_TOKEN", it.result!!.token)

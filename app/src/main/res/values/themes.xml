@@ -22,5 +22,7 @@
         <item name="android:textSize">@dimen/dimen_16sp</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
-
+    <style name="ProgressBarTheme" parent="ThemeOverlay.AppCompat.Light">
+        <item name="colorAccent">@color/color1</item>
+    </style>
 </resources>
