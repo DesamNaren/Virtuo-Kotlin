@@ -31,7 +31,7 @@ import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
 private val TAG = ViruoNetwork::class.java.simpleName
-val VIRTUO_BASE_URL = BuildConfig.SERVER_URL
+const val VIRTUO_BASE_URL = BuildConfig.SERVER_URL
 
 private val service: ViruoNetwork by lazy {
     val okHttpClient = OkHttpClient.Builder()
@@ -69,6 +69,6 @@ interface ViruoNetwork {
     ): Response<LoginResponse>
 
     @GET("getOfficeCoordinates")
-    suspend fun getOfficeCoOrdinates(@Header("Auth_Token") token: String):Response<CoOrdinatesResponse>
+    suspend fun getOfficeCoOrdinates(@Header("Auth_Token") token: String): Response<CoOrdinatesResponse>
 }
 

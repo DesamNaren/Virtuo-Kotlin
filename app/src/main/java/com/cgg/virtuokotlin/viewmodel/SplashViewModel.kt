@@ -1,20 +1,19 @@
 package com.cgg.virtuokotlin.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
-import com.cgg.virtuokotlin.repository.LoginRepository
-import com.cgg.virtuokotlin.source.LoginReq
-import com.cgg.virtuokotlin.source.LoginResponse
-import com.cgg.virtuokotlin.source.VersionResponse
+import com.cgg.virtuokotlin.Resource
+import com.cgg.virtuokotlin.repository.SplashRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Response
 
-class SplashViewModel : ViewModel() {
+class SplashViewModel(private val repository: SplashRepository) : ViewModel() {
 
-    fun get(): LiveData<Response<VersionResponse>> = liveData {
-        emit( LoginRepository().callVersionAPI())
+    fun callVersionAPI() = liveData(Dispatchers.IO) {
+        emit(Resource.loading(data = null))
+        try {
+            emit(Resource.success(data = repository.callVersionAPI()))
+        } catch (exception: Exception) {
+            emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+        }
     }
 }

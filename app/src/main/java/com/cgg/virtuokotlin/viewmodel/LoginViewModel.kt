@@ -1,19 +1,20 @@
 package com.cgg.virtuokotlin.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
-import androidx.lifecycle.viewModelScope
+import com.cgg.virtuokotlin.Resource
 import com.cgg.virtuokotlin.repository.LoginRepository
 import com.cgg.virtuokotlin.source.LoginReq
-import com.cgg.virtuokotlin.source.LoginResponse
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import retrofit2.Response
 
-class LoginViewModel : ViewModel() {
+class LoginViewModel(private val repository: LoginRepository) : ViewModel() {
 
-    fun get(loginReq: LoginReq): LiveData<Response<LoginResponse>> = liveData {
-        emit( LoginRepository().callLoginAPI(loginReq))
+    fun callLoginAPI(loginReq: LoginReq) = liveData(Dispatchers.IO) {
+        emit(Resource.loading(data = null))
+        try {
+            emit(Resource.success(data = repository.callLoginAPI(loginReq)))
+        } catch (exception: Exception) {
+            emit(Resource.error(data = null, message = exception.message ?: "Error Occurred!"))
+        }
     }
 }

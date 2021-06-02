@@ -4,22 +4,20 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.TextUtils
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.cgg.virtuokotlin.R
-import com.cgg.virtuokotlin.Resource
+import com.cgg.virtuokotlin.Status
 import com.cgg.virtuokotlin.Utilities.AppConstants
 import com.cgg.virtuokotlin.Utilities.Extensions.toast
 import com.cgg.virtuokotlin.databinding.ActivitySplashBinding
 import com.cgg.virtuokotlin.interfaces.PermissionsCallback
+import com.cgg.virtuokotlin.repository.SplashRepository
 import com.cgg.virtuokotlin.source.VersionData
+import com.cgg.virtuokotlin.viewmodel.Factory
 import com.cgg.virtuokotlin.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
@@ -41,24 +39,24 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
 
         binding.root.background.apply {
             var themeColor = preferences.getInt(AppConstants.THEME_COLOR, -1);
-                when (themeColor) {
-                    -1 -> {
-                        binding.root.background = ContextCompat.getDrawable(context, R.drawable.splash1)
-                        themeColor = R.drawable.theme_one
-                        preferencesEditor.putInt(AppConstants.THEME_COLOR, themeColor)
-                        preferencesEditor.commit()
-                    }
-                    R.drawable.theme_one ->
-                        ContextCompat.getDrawable(context, R.drawable.splash1)
-                    R.drawable.theme_two ->
-                        ContextCompat.getDrawable(context, R.drawable.splash2)
-                    R.drawable.theme_three ->
-                        ContextCompat.getDrawable(context, R.drawable.splash3)
-                    R.drawable.theme_four ->
-                        ContextCompat.getDrawable(context, R.drawable.splash4)
-                    R.drawable.theme_five ->
-                        ContextCompat.getDrawable(context, R.drawable.splash5)
+            when (themeColor) {
+                -1 -> {
+                    binding.root.background = ContextCompat.getDrawable(context, R.drawable.splash1)
+                    themeColor = R.drawable.theme_one
+                    preferencesEditor.putInt(AppConstants.THEME_COLOR, themeColor)
+                    preferencesEditor.commit()
                 }
+                R.drawable.theme_one ->
+                    ContextCompat.getDrawable(context, R.drawable.splash1)
+                R.drawable.theme_two ->
+                    ContextCompat.getDrawable(context, R.drawable.splash2)
+                R.drawable.theme_three ->
+                    ContextCompat.getDrawable(context, R.drawable.splash3)
+                R.drawable.theme_four ->
+                    ContextCompat.getDrawable(context, R.drawable.splash4)
+                R.drawable.theme_five ->
+                    ContextCompat.getDrawable(context, R.drawable.splash5)
+            }
         }
 
         /** Call Version API*/
@@ -69,21 +67,33 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
         }
     }
 
-
     private fun callVersionCheck() {
-        viewModel = ViewModelProvider(this).get(SplashViewModel::class.java)
+        viewModel = ViewModelProvider(
+            this,
+            Factory()
+        ).get(SplashViewModel::class.java)
         viewModel.apply {
-            get().observe(this@SplashActivity, {
-                if (it!!.isSuccessful) {
-                    val versionData: VersionData = it.body()!!.data
-                    toast(versionData.version_no)
-                    navigateActivity(mPIN)
+            callVersionAPI().observe(this@SplashActivity, {
+                it?.let { resource ->
+                    when (resource.status) {
+                        Status.SUCCESS -> {
+                            val versionData: VersionData = it.data!!.body()!!.data
+                            toast(versionData.version_no)
+                            navigateActivity()
+                        }
+                        Status.ERROR -> {
+                            toast(it.message.toString())
+                        }
+                        Status.LOADING -> {
+                            toast("Loading....")
+                        }
+                    }
                 }
             })
         }
     }
 
-    private fun navigateActivity(mPIN: String) {
+    private fun navigateActivity() {
         when {
             TextUtils.isEmpty(mPIN) -> {
                 callActivity(LoginActivity::class.java)
@@ -102,10 +112,10 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
     override fun onPermissionCallBack(granted: Boolean) {
         when {
             granted -> {
-                navigateActivity(mPIN)
+                navigateActivity()
             }
             else -> {
-                navigateActivity(mPIN)
+                navigateActivity()
             }
         }
     }

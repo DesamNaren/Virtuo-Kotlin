@@ -7,16 +7,17 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.cgg.virtuokotlin.AesEncryption
 import com.cgg.virtuokotlin.R
+import com.cgg.virtuokotlin.Status
 import com.cgg.virtuokotlin.Utilities.AppConstants
 import com.cgg.virtuokotlin.Utilities.Extensions.toast
 import com.cgg.virtuokotlin.Utilities.Utils
 import com.cgg.virtuokotlin.databinding.ActivityLoginBinding
 import com.cgg.virtuokotlin.source.LoginReq
 import com.cgg.virtuokotlin.source.LoginResponse
+import com.cgg.virtuokotlin.viewmodel.Factory
 import com.cgg.virtuokotlin.viewmodel.LoginViewModel
 import com.google.gson.Gson
 
@@ -32,13 +33,14 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         context = this
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        val aesEncryption: AesEncryption = AesEncryption.getInstance()
+        val viewModel = ViewModelProvider(
+            this,
+            Factory()
+        ).get(LoginViewModel::class.java)
 
         binding.btnSubmit.setOnClickListener(View.OnClickListener {
-            val viewModel: LoginViewModel =
-                ViewModelProvider(this).get(LoginViewModel::class.java)
-
             try {
-                val aesEncryption: AesEncryption = AesEncryption.getInstance()
                 aesEncryption.apply {
                     loginRequest = LoginReq(
                         null,
@@ -50,47 +52,37 @@ class LoginActivity : BaseActivity() {
                     )
 
                     loginRequest.apply {
-                        if (mobileNumber != null) {
-                            encMob = encrypt(mobileNumber)
-                            encMob = encMob.replace("\n", "")
-                            mobileNumber = encMob
-                        } else {
-                            encUserName = encrypt(userName)
-                            encUserName = encUserName.replace("\n", "")
-                            encPassword = encrypt(password)
-                            encPassword = encPassword.replace("\n", "")
-                            userName = encUserName
-                            password = encPassword
+                        when {
+                            mobileNumber != null -> {
+                                encMob = encrypt(mobileNumber)
+                                encMob = encMob.replace("\n", "")
+                                mobileNumber = encMob
+                            }
+                            else -> {
+                                encUserName = encrypt(userName)
+                                encUserName = encUserName.replace("\n", "")
+                                encPassword = encrypt(password)
+                                encPassword = encPassword.replace("\n", "")
+                                userName = encUserName
+                                password = encPassword
+                            }
                         }
 
-                        viewModel.get(
-                            this
-                        ).observe(this@LoginActivity, Observer { loginResponse ->
-                            loginResponse.body()!!.apply {
-                                when {
-                                    !TextUtils.isEmpty(data.otpMobile) &&
-                                            data.mpin == "00" -> {
-                                        navigateActivity(
-                                            this,
-                                            DownloadActivity::class.java //AutoOtpActivity
-                                        )
-                                    }
-                                    else -> {
-
-                                        navigateActivity(
-                                            this,
+                        viewModel.callLoginAPI(this)
+                            .observe(this@LoginActivity, { response ->
+                                response.let { resource ->
+                                    when (resource.status) {
+                                        Status.SUCCESS -> navigateActivity(
+                                            resource.data!!.body()!!,
                                             DownloadActivity::class.java
                                         )
+                                        Status.ERROR -> toast(response.message!!)
+                                        Status.LOADING -> toast("Loading....")
                                     }
                                 }
-                            }
-                        })
+                            })
                     }
-
-
                 }
-
-
             } catch (e: Exception) {
                 toast(getString(R.string.something) + " in encryption")
                 e.printStackTrace()

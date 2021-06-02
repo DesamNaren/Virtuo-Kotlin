@@ -2,16 +2,15 @@ package com.cgg.virtuokotlin.repository
 
 import android.content.Context
 import com.cgg.virtuokotlin.db.VirtuoDatabase
-import com.cgg.virtuokotlin.network.getNetworkService
+import com.cgg.virtuokotlin.network.ViruoNetwork
 import com.cgg.virtuokotlin.source.CoOrdinates
 import com.cgg.virtuokotlin.source.CoOrdinatesResponse
 import retrofit2.Response
 
-class DownloadRepository {
+class DownloadRepository(private val vService: ViruoNetwork) {
 
     suspend fun callCoOrdinates(token: String): Response<CoOrdinatesResponse> {
-        val networkService = getNetworkService()
-        return networkService.getOfficeCoOrdinates(token)
+        return vService.getOfficeCoOrdinates(token)
     }
 
     suspend fun insertCoOrdinates(
