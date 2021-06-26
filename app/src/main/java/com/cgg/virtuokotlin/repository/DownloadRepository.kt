@@ -6,8 +6,9 @@ import com.cgg.virtuokotlin.network.ViruoNetwork
 import com.cgg.virtuokotlin.source.CoOrdinates
 import com.cgg.virtuokotlin.source.CoOrdinatesResponse
 import retrofit2.Response
+import javax.inject.Inject
 
-class DownloadRepository(private val vService: ViruoNetwork) {
+class DownloadRepository @Inject constructor(private val vService: ViruoNetwork) {
 
     suspend fun callCoOrdinates(token: String): Response<CoOrdinatesResponse> {
         return vService.getOfficeCoOrdinates(token)

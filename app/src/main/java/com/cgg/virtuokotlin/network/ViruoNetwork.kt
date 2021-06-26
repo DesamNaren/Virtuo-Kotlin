@@ -30,27 +30,24 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import java.util.concurrent.TimeUnit
 
-private val TAG = ViruoNetwork::class.java.simpleName
-const val VIRTUO_BASE_URL = BuildConfig.SERVER_URL
+//private val service: ViruoNetwork {
+//    val okHttpClient = OkHttpClient.Builder()
+//        .readTimeout(60, TimeUnit.SECONDS)
+//        .writeTimeout(60, TimeUnit.SECONDS)
+//        .connectTimeout(60, TimeUnit.SECONDS)
+//        .build()
+//
+//    val retrofit = Retrofit.Builder()
+//        .baseUrl(VIRTUO_BASE_URL)
+//        .client(okHttpClient)
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build()
+//
+//    Log.i(TAG, ViruoNetwork::class.java.hashCode().toString())
+//    retrofit.create(ViruoNetwork::class.java)
+//}
 
-private val service: ViruoNetwork by lazy {
-    val okHttpClient = OkHttpClient.Builder()
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS)
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .build()
-
-    val retrofit = Retrofit.Builder()
-        .baseUrl(VIRTUO_BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    Log.i(TAG, ViruoNetwork::class.java.hashCode().toString())
-    retrofit.create(ViruoNetwork::class.java)
-}
-
-fun getNetworkService() = service
+//fun getNetworkService() = service
 
 interface ViruoNetwork {
 

@@ -8,34 +8,37 @@ import android.text.TextUtils
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
 import com.cgg.virtuokotlin.R
 import com.cgg.virtuokotlin.Status
 import com.cgg.virtuokotlin.Utilities.AppConstants
 import com.cgg.virtuokotlin.Utilities.Extensions.toast
+import com.cgg.virtuokotlin.application.VirtuoApplication
 import com.cgg.virtuokotlin.databinding.ActivitySplashBinding
 import com.cgg.virtuokotlin.interfaces.PermissionsCallback
-import com.cgg.virtuokotlin.repository.SplashRepository
 import com.cgg.virtuokotlin.source.VersionData
-import com.cgg.virtuokotlin.viewmodel.Factory
 import com.cgg.virtuokotlin.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 class SplashActivity : BaseActivity(), PermissionsCallback {
 
     private lateinit var binding: ActivitySplashBinding
     private lateinit var context: Context
     private lateinit var mPIN: String
-    private lateinit var viewModel: SplashViewModel
+    @Inject
+    lateinit var viewModel: SplashViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as VirtuoApplication).appComponent.inject(this)
+
         super.onCreate(savedInstanceState)
         context = this
         binding = DataBindingUtil.setContentView(this, R.layout.activity_splash)
         mPIN = preferences.getString(AppConstants.MPIN, "")!!
         Log.i(Companion.TAG, "onCreate")
         /**Setting Theme Background*/
+
 
         binding.root.background.apply {
             var themeColor = preferences.getInt(AppConstants.THEME_COLOR, -1);
@@ -68,10 +71,6 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
     }
 
     private fun callVersionCheck() {
-        viewModel = ViewModelProvider(
-            this,
-            Factory()
-        ).get(SplashViewModel::class.java)
         viewModel.apply {
             callVersionAPI().observe(this@SplashActivity, {
                 it?.let { resource ->

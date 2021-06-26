@@ -7,8 +7,9 @@ import com.cgg.virtuokotlin.Resource
 import com.cgg.virtuokotlin.repository.DownloadRepository
 import com.cgg.virtuokotlin.source.CoOrdinates
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 
-class DownloadViewModel(private val repository: DownloadRepository) : ViewModel() {
+class DownloadViewModel @Inject constructor(private val repository: DownloadRepository) : ViewModel() {
 
     fun callCoOrdinates(token: String) = liveData(Dispatchers.IO) {
         emit(Resource.loading(data = null))

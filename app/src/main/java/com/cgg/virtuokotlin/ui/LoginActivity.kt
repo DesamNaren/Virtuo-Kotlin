@@ -14,12 +14,14 @@ import com.cgg.virtuokotlin.Status
 import com.cgg.virtuokotlin.Utilities.AppConstants
 import com.cgg.virtuokotlin.Utilities.Extensions.toast
 import com.cgg.virtuokotlin.Utilities.Utils
+import com.cgg.virtuokotlin.application.VirtuoApplication
 import com.cgg.virtuokotlin.databinding.ActivityLoginBinding
 import com.cgg.virtuokotlin.source.LoginReq
 import com.cgg.virtuokotlin.source.LoginResponse
 import com.cgg.virtuokotlin.viewmodel.Factory
 import com.cgg.virtuokotlin.viewmodel.LoginViewModel
 import com.google.gson.Gson
+import javax.inject.Inject
 
 class LoginActivity : BaseActivity() {
     private lateinit var encUserName: String
@@ -29,15 +31,16 @@ class LoginActivity : BaseActivity() {
     private lateinit var context: Context
     private lateinit var loginRequest: LoginReq
 
+
+    @Inject
+    lateinit var viewModel: LoginViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as VirtuoApplication).appComponent.inject(this)
         super.onCreate(savedInstanceState)
         context = this
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
         val aesEncryption: AesEncryption = AesEncryption.getInstance()
-        val viewModel = ViewModelProvider(
-            this,
-            Factory()
-        ).get(LoginViewModel::class.java)
 
         binding.btnSubmit.setOnClickListener(View.OnClickListener {
             try {
