@@ -3,11 +3,13 @@ package com.cgg.virtuokotlin.ui
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.icu.lang.UCharacter.GraphemeClusterBreak.L
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import com.cgg.virtuokotlin.R
 import com.cgg.virtuokotlin.Status
 import com.cgg.virtuokotlin.Utilities.AppConstants
@@ -26,6 +28,7 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
     private lateinit var binding: ActivitySplashBinding
     private lateinit var context: Context
     private lateinit var mPIN: String
+
     @Inject
     lateinit var viewModel: SplashViewModel
 
@@ -62,7 +65,7 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
             }
         }
 
-        /** Call Version API*/
+L        /** Call Version API*/
         runBlocking {
             Log.i(Companion.TAG, "onCreate: runBlocking")
             delay(2000)
@@ -72,23 +75,42 @@ class SplashActivity : BaseActivity(), PermissionsCallback {
 
     private fun callVersionCheck() {
         viewModel.apply {
-            callVersionAPI().observe(this@SplashActivity, {
-                it?.let { resource ->
-                    when (resource.status) {
-                        Status.SUCCESS -> {
-                            val versionData: VersionData = it.data!!.body()!!.data
+
+            lifecycleScope.launchWhenCreated {
+                callVersionAPI1()
+
+                getData().observe(this@SplashActivity, { response ->
+                    when {
+                        response.isSuccessful -> {
+                            val versionData: VersionData = response.body()!!.data
                             toast(versionData.version_no)
                             navigateActivity()
                         }
-                        Status.ERROR -> {
-                            toast(it.message.toString())
-                        }
-                        Status.LOADING -> {
-                            toast("Loading....")
+                        else -> {
+                            toast(response.errorBody().toString())
                         }
                     }
-                }
-            })
+                })
+
+
+//                callVersionAPI().observe(this@SplashActivity, {
+//                    it?.let { resource ->
+//                        when (resource.status) {
+//                            Status.SUCCESS -> {
+//                                val versionData: VersionData = it.data!!.body()!!.data
+//                                toast(versionData.version_no)
+//                                navigateActivity()
+//                            }
+//                            Status.ERROR -> {
+//                                toast(it.message.toString())
+//                            }
+//                            Status.LOADING -> {
+//                                toast("Loading....")
+//                            }
+//                        }
+//                    }
+//                })
+            }
         }
     }
 
